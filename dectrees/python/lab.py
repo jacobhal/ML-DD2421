@@ -1,5 +1,6 @@
 import monkdata as m
 import dtree
+import drawtree_qt5 as draw
 
 
 def ASSIGNMENT1():
@@ -11,13 +12,53 @@ def ASSIGNMENT1():
 	print("Entropy of MONK-2 Training Set:", e2)
 	print("Entropy of MONK-3 Training Set:", e3)
 
-#calcEntropy()
+#ASSIGNMENT1()
 
-def ASSIGNMENT2(dataset):
+def ASSIGNMENT3(dataset):
 	for idx, attribute in enumerate(m.attributes):
 		ag = dtree.averageGain(dataset, attribute)
 		print("Average gain of a{:d}: {:f}".format(idx+1, ag))
 
-ASSIGNMENT2(m.monk1)
-ASSIGNMENT2(m.monk2)
-ASSIGNMENT2(m.monk3)
+#ASSIGNMENT3(m.monk1)
+#ASSIGNMENT3(m.monk2)
+#ASSIGNMENT3(m.monk3)
+
+def calcNextTreeLevel():
+	selectedAttribute = m.attributes[4]
+	s1 = dtree.select(m.monk1, selectedAttribute, 1)
+	s2 = dtree.select(m.monk1, selectedAttribute, 2)
+	s3 = dtree.select(m.monk1, selectedAttribute, 3)
+	s4 = dtree.select(m.monk1, selectedAttribute, 4)
+
+	# Calculate information gain of subsets
+	#ASSIGNMENT3(s1)
+	#ASSIGNMENT3(s2)
+	#ASSIGNMENT3(s3)
+	#ASSIGNMENT3(s4)
+
+	mc1 = dtree.mostCommon(s1)
+	mc2 = dtree.mostCommon(s2)
+	mc3 = dtree.mostCommon(s3)
+	mc4 = dtree.mostCommon(s4)
+
+	tree = dtree.buildTree(m.monk1, m.attributes)
+	print(tree)
+	draw.drawTree(tree)
+
+
+#calcNextTreeLevel()
+
+def ASSIGNMENT5():
+	t1 = dtree.buildTree(m.monk1, m.attributes)
+	print(dtree.check(t1, m.monk1test))
+	print(dtree.check(t1, m.monk1))
+
+	t2 = dtree.buildTree(m.monk2, m.attributes)
+	print(dtree.check(t2, m.monk2test))
+	print(dtree.check(t2, m.monk2))
+
+	t3 = dtree.buildTree(m.monk3, m.attributes)
+	print(dtree.check(t3, m.monk3test))
+	print(dtree.check(t3, m.monk3))
+
+ASSIGNMENT5()

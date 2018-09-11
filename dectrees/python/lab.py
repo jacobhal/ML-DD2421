@@ -40,13 +40,17 @@ def calcNextTreeLevel():
 	mc2 = dtree.mostCommon(s2)
 	mc3 = dtree.mostCommon(s3)
 	mc4 = dtree.mostCommon(s4)
+	#print(mc1)
+	#print(mc2)
+	#print(mc3)
+	#print(mc4)
 
 	tree = dtree.buildTree(m.monk1, m.attributes)
 	print(tree)
 	draw.drawTree(tree)
 
 
-#calcNextTreeLevel()
+calcNextTreeLevel()
 
 def ASSIGNMENT5():
 	t1 = dtree.buildTree(m.monk1, m.attributes)

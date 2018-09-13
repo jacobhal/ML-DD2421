@@ -1,6 +1,6 @@
 import monkdata as m
 import dtree
-import drawtree_qt5 as draw
+import drawtree_qt4 as draw
 import random
 
 
@@ -74,11 +74,27 @@ def partition(data, fraction):
     breakPoint = int(len(ldata) * fraction)
     return ldata[:breakPoint], ldata[breakPoint:]
 
-def ASSIGNMENT7(iterations):
-	for i in range(iterations):
+def prune(currentRatio, tree, validationSet):
+	pruningCandidates = dtree.allPruned(tree)
+	ratios = list(map(lambda lst: dtree.check(lst, validationSet), pruningCandidates))
+	print(ratios)
+	maxR = max(ratios)
+	maxI = ratios.index(max(ratios))
+	print("Current is: {:f}".format(currentRatio))
+	if currentRatio < maxR:
+		print("Found new max: {:f}".format(maxR))
+		return prune(maxR, pruningCandidates[maxI], validationSet)
+	else:
+		return float(currentRatio)
+
+def pruningTest():
 		monk1train, monk1val = partition(m.monk1, 0.6)
 		tree = dtree.buildTree(monk1train, m.attributes)
-		dtree.allPruned(tree)
+		curRatio = dtree.check(tree, monk1val)			
+		maxR = prune(curRatio, tree, monk1val)
+		print("Max is: {:f}".format(maxR))
+
+pruningTest()
 """
 	print("MONK-1")
 	print('\n'.join(str(monk.identity) for monk in m.monk1))

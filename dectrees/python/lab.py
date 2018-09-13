@@ -2,6 +2,8 @@ import monkdata as m
 import dtree
 import drawtree_qt4 as draw
 import random
+import numpy as np
+import matplotlib.pyplot as plt
 
 
 def ASSIGNMENT1():
@@ -77,24 +79,44 @@ def partition(data, fraction):
 def prune(currentRatio, tree, validationSet):
 	pruningCandidates = dtree.allPruned(tree)
 	ratios = list(map(lambda lst: dtree.check(lst, validationSet), pruningCandidates))
-	print(ratios)
+	#print(ratios)
 	maxR = max(ratios)
 	maxI = ratios.index(max(ratios))
-	print("Current is: {:f}".format(currentRatio))
+	#print("Current is: {:f}".format(currentRatio))
 	if currentRatio < maxR:
-		print("Found new max: {:f}".format(maxR))
+		#print("Found new max: {:f}".format(maxR))
 		return prune(maxR, pruningCandidates[maxI], validationSet)
 	else:
 		return float(currentRatio)
 
-def pruningTest():
-		monk1train, monk1val = partition(m.monk1, 0.6)
-		tree = dtree.buildTree(monk1train, m.attributes)
-		curRatio = dtree.check(tree, monk1val)			
-		maxR = prune(curRatio, tree, monk1val)
-		print("Max is: {:f}".format(maxR))
+def pruningTest(dataset, fraction): # returns the error classification ratio 
+		monktrain, monkval = partition(dataset, fraction)
+		tree = dtree.buildTree(monktrain, m.attributes)
+		curRatio = dtree.check(tree, monkval)			
+		maxR = prune(curRatio, tree, monkval)
+		#print("Max is: {:f}".format(maxR))
+		return 1-maxR
 
-pruningTest()
+#pruningTest(m.monk1, 0.6)
+
+def ASSIGNMENT7(dataset, iterations):
+	fractions = (0.3, 0.4, 0.5, 0.6, 0.7, 0.8)
+	sumAverage = []
+	for fraction in fractions:
+		for itr in range(iterations):
+			sumAverage.append(pruningTest(dataset, fraction))
+		n, bins, patches = plt.hist(sumAverage, 50, normed=1, facecolor='green', alpha=0.75)
+		plt.xlabel("Error ratio")
+		plt.ylabel("Density")
+		plt.title("Measure of spread for MONK-1 dataset according to error ratios over " + iterations + " iteratons")
+		plt.axis([0,1, 0, iterations])
+		plt.grid(True)
+
+		plt.show()
+		#print("Mean error of dataset using fraction = {:f} and {:d} iterations: {:f}".format(fraction, iterations, sumAverage))
+
+ASSIGNMENT7(m.monk1, 100)
+
 """
 	print("MONK-1")
 	print('\n'.join(str(monk.identity) for monk in m.monk1))

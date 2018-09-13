@@ -1,6 +1,7 @@
 import monkdata as m
 import dtree
 import drawtree_qt5 as draw
+import random
 
 
 def ASSIGNMENT1():
@@ -45,12 +46,12 @@ def calcNextTreeLevel():
 	#print(mc3)
 	#print(mc4)
 
-	tree = dtree.buildTree(m.monk1, m.attributes)
+	tree = dtree.buildTree(m.monk2test, m.attributes)
 	print(tree)
 	draw.drawTree(tree)
 
 
-calcNextTreeLevel()
+#calcNextTreeLevel()
 
 def ASSIGNMENT5():
 	t1 = dtree.buildTree(m.monk1, m.attributes)
@@ -65,4 +66,24 @@ def ASSIGNMENT5():
 	print(dtree.check(t3, m.monk3test))
 	print(dtree.check(t3, m.monk3))
 
-ASSIGNMENT5()
+#ASSIGNMENT5()
+
+def partition(data, fraction):
+    ldata = list(data)
+    random.shuffle(ldata)
+    breakPoint = int(len(ldata) * fraction)
+    return ldata[:breakPoint], ldata[breakPoint:]
+
+def ASSIGNMENT7(iterations):
+	for i in range(iterations):
+		monk1train, monk1val = partition(m.monk1, 0.6)
+		tree = dtree.buildTree(monk1train, m.attributes)
+		dtree.allPruned(tree)
+"""
+	print("MONK-1")
+	print('\n'.join(str(monk.identity) for monk in m.monk1))
+	print("MONK-1 TRAINING SET")
+	print('\n'.join(str(monk.identity) for monk in monk1train))
+	print("MONK-1 VALIDATION SET")
+	print('\n'.join(str(monk.identity) for monk in monk1val))
+"""

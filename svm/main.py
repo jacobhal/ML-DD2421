@@ -1,3 +1,3 @@
-import numpy as num
+import numpy as np
 import scipy as sc
-import matplotlib as plot
+import matplotlib as plt

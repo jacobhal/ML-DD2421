@@ -1,6 +1,7 @@
 import numpy, random, math
 from scipy.optimize import minimize
 import matplotlib.pyplot as plt
+import test_data as data
 
 # Number of training samples
 N = 100

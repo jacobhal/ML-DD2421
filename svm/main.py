@@ -3,8 +3,10 @@ from scipy.optimize import minimize
 import matplotlib.pyplot as plt
 import test_data, kernel_functions as kf
 
+# What kernel function to use
+kernel_function = kf.functions['linear']
 # Number of training samples
-N = 40
+N = 100
 # Generate our test data
 data = test_data.TestData(N, False)
 data.generate_data()
@@ -18,16 +20,14 @@ B = [(0, upper_bound) for b in range(N)]
 preComputedMatrix = numpy.empty([N,N])
 for i in range(N):
 	for j in range(N):
-		preComputedMatrix[i][j] = data.targets[i] * data.targets[j] * kf.kernel_linear(data.inputs[i], data.inputs[j])
+		preComputedMatrix[i][j] = data.targets[i] * data.targets[j] * kernel_function(data.inputs[i], data.inputs[j])
 
 def zerofun(vec):
     scalar = numpy.dot(vec, data.targets)
-    return scalar
+    sumScalar = numpy.sum(scalar)
+    return sumScalar
 
 XC = constraint = {'type':'eq', 'fun':zerofun}
-
-# List comprehension: will construct a new list a of the same length as the sequence seq.
-# a = [expr for x in seq]
 
 # Take the alpha vector and return a scalar value by implementing the expression that should be minimized.
 def objective(alpha_vector):

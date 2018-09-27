@@ -1,3 +1,7 @@
 import test_data as data
 
-print(data.inputs)
+x = data.TestData(40, True)
+x.generate_data()
+
+print(f"Inputs: \n {x.inputs}")
+print(f"Targets: \n {x.targets}")

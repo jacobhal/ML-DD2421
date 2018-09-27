@@ -3,6 +3,8 @@ import numpy
 class TestData:
     inputs = None
     targets = None
+    classA = None
+    classB = None
     def __init__(self, samples, seed, values=None):
         self.samples = samples
         self.seed = seed
@@ -15,20 +17,20 @@ class TestData:
 
         # Return a sample (or samples) from the “standard normal” distribution with zero mean and unit variance
         # By multiplying with a number and adding a vector we can shift this cluster to any position
-        classA = numpy.concatenate(
+        self.classA = numpy.concatenate(
         (numpy.random.randn(int(self.samples/4), 2) * 0.2 + [1.5, 0.5],
         numpy.random.randn(int(self.samples/4), 2) * 0.2 + [-1.5, 0.5]))
 
         # Return a sample (or samples) from the “standard normal” distribution with zero mean and unit variance
-        classB = numpy.random.randn(int(self.samples/2), 2) * 0.2 + [0.0, -0.5]
+        self.classB = numpy.random.randn(int(self.samples/2), 2) * 0.2 + [0.0, -0.5]
 
         # Concatenate A and B
-        inputs = numpy.concatenate((classA , classB))
+        inputs = numpy.concatenate((self.classA , self.classB))
 
         # N*1 array of targets, create positive and negative ones based on number of rows in A and B
         targets = numpy.concatenate(
-        (numpy.ones(classA.shape[0]),
-        -numpy.ones(classB.shape[0])))
+        (numpy.ones(self.classA.shape[0]),
+        -numpy.ones(self.classB.shape[0])))
 
         N = inputs.shape[0] # Number of rows (samples)
         # Create a list from 0-N

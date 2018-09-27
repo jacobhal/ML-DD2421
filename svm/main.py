@@ -14,7 +14,7 @@ upper_bound = None
 # Lower and upper bounds for each value in alpha vector
 B = [(0, upper_bound) for b in range(N)]
 
-# Pre-compute the matrix P by multiplying the every combination of target values, t, and kernel K.  
+# Pre-compute the matrix P by multiplying the every combination of target values, t, and kernel K.
 preComputedMatrix = numpy.empty([N,N])
 for i in range(N):
 	for j in range(N):
@@ -42,7 +42,14 @@ def indicator(support_vector, alpha_vector, b):
 	val = numpy.sum( \
 		numpy.dot(alpha_vector, data.targets) * \
 		kf.functions['linear'](support_vector, data.inputs)) - b
-	return val 
+	return val
+
+def plot():
+    plt.plot([p[0] for p in data.classA], [p[1] for p in data.classA], 'b. ')
+    plt.plot([p[0] for p in data.classB], [p[1] for p in data.classB], 'r. ')
+    plt.axis('equal') # Force same scale on both axes
+    plt.savefig('svmplot.pdf') # Save a copy in a file
+    plt.show() # Show the plot on the screen
 
 def main():
     ret = minimize(objective, start, bounds = B, constraints = XC)
@@ -58,10 +65,11 @@ def main():
     	# Unzip to get our target values in a list
     	_, _, t = zip(*sWithCorrValues)
     	# Calculate b value
-    	b = numpy.sum(numpy.dot(alpha, data.targets) * kf.kernel_linear(s, data.inputs)) - numpy.sum(t) 
+    	b = numpy.sum(numpy.dot(alpha, data.targets) * kf.kernel_linear(s, data.inputs)) - numpy.sum(t)
     	# Indicator function
     	print("Indicator:",indicator(s, alpha, b))
     else:
     	print("No solution found")
 
 main()
+plot()

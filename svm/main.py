@@ -1,15 +1,20 @@
 import numpy, random, math
 from scipy.optimize import minimize
 import matplotlib.pyplot as plt
-import test_data as data
+import test_data, kernel_functions
 
 # Number of training samples
-N = 100
+N = 10
 # Initial guess of the alpha vector
 start = numpy.zeros(N)
 C = None
 # Lower and upper bounds for each value in alpha vector
 B = [(0, C) for b in range(N)]
+
+preComputedMatrix = numpy.empty([N,N])
+for i in range(N):
+	for j in range(N):
+		preComputedMatrix[i][j] = test_data.targets[i] * test_data.targets[j] * kernel_functions.kernel_linear(test_data.inputs[i], test_data.inputs[j])
 
 def zerofun(vec):
     scalar = 0
@@ -18,7 +23,7 @@ def zerofun(vec):
 XC = constraint = {'type':'eq', 'fun':zerofun(B)}
 
 # List comprehension: will construct a new list a of the same length as the sequence seq.
-a = [expr for x in seq]
+# a = [expr for x in seq]
 
 def main():
     ret = minimize(objective(a), start, bounds = B, constraints = XC)
@@ -33,6 +38,3 @@ def objective(a):
     scalar = 0
     return scalar
 
-# Linear kernel function
-def kernel_linear(v1, v2):
-	return numpy.dot(v1,v2)

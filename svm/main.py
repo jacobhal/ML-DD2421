@@ -17,10 +17,10 @@ def zerofun(vec):
 XC = constraint = {'type':'eq', 'fun':zerofun(B)}
 
 # List comprehension: will construct a new list a of the same length as the sequence seq.
-alpha = [expr for x in seq]
+a = [expr for x in seq]
 
 def main():
-    ret = minimize(objective(alpha), start, bounds = B, constraints = XC)
+    ret = minimize(objective(a), start, bounds = B, constraints = XC)
     alpha = ret['x']
 
 # Find the alpha vector a that minimizes the function objective within the bounds and the constraints.

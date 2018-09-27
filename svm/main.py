@@ -11,6 +11,7 @@ C = None
 # Lower and upper bounds for each value in alpha vector
 B = [(0, C) for b in range(N)]
 
+# Pre-compute the matrix P by multiplying the every combination of target values, t, and kernel K.  
 preComputedMatrix = numpy.empty([N,N])
 for i in range(N):
 	for j in range(N):
@@ -34,7 +35,11 @@ def minimize(a, s, bounds, constraints):
     return a
 
 # Take the alpha vector and return a scalar value by implementing the expression that should be minimized.
-def objective(a):
-    scalar = 0
-    return scalar
+def objective(alpha_vector):
+    alpha_dot = numpy.dot(alpha_vector, alpha_vector)
+    alpha_sum = numpy.sum(alpha_vector)
+
+    completeMatrix = numpy.dot(alpha_dot, preComputedMatrix)
+    completeMatrixSum = numpy.sum(completeMatrix)
+    return 0.5 * completeMatrixSum - alpha_sum
 

@@ -31,3 +31,7 @@ def minimize(a, s, bounds, constraints):
 def objective(a):
     scalar = 0
     return scalar
+
+# Linear kernel function
+def kernel_linear(v1, v2):
+	return numpy.dot(v1,v2)

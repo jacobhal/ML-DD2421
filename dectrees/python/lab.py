@@ -1,9 +1,10 @@
 import monkdata as m
 import dtree
-import drawtree_qt4 as draw
+import drawtree_qt5 as draw
 import random
 import numpy as np
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 
 def ASSIGNMENT1():
@@ -80,8 +81,9 @@ def prune(currentRatio, tree, validationSet):
 	pruningCandidates = dtree.allPruned(tree)
 	ratios = list(map(lambda lst: dtree.check(lst, validationSet), pruningCandidates))
 	#print(ratios)
-	maxR = max(ratios)
-	maxI = ratios.index(max(ratios))
+	maxR = max(ratios, default=currentRatio)
+	if maxR != currentRatio:
+		maxI = ratios.index(maxR)
 	#print("Current is: {:f}".format(currentRatio))
 	if currentRatio < maxR:
 		#print("Found new max: {:f}".format(maxR))
@@ -89,10 +91,10 @@ def prune(currentRatio, tree, validationSet):
 	else:
 		return float(currentRatio)
 
-def pruningTest(dataset, fraction): # returns the error classification ratio 
+def pruningTest(dataset, fraction): # returns the error classification ratio
 		monktrain, monkval = partition(dataset, fraction)
 		tree = dtree.buildTree(monktrain, m.attributes)
-		curRatio = dtree.check(tree, monkval)			
+		curRatio = dtree.check(tree, monkval)
 		maxR = prune(curRatio, tree, monkval)
 		#print("Max is: {:f}".format(maxR))
 		return 1-maxR
@@ -102,20 +104,28 @@ def pruningTest(dataset, fraction): # returns the error classification ratio
 def ASSIGNMENT7(dataset, iterations):
 	fractions = (0.3, 0.4, 0.5, 0.6, 0.7, 0.8)
 	sumAverage = []
+	print("Fraction Mean")
 	for fraction in fractions:
 		for itr in range(iterations):
 			sumAverage.append(pruningTest(dataset, fraction))
-		n, bins, patches = plt.hist(sumAverage, 50, normed=1, facecolor='green', alpha=0.75)
-		plt.xlabel("Error ratio")
-		plt.ylabel("Density")
-		plt.title("Measure of spread for MONK-1 dataset according to error ratios over " + iterations + " iteratons")
-		plt.axis([0,1, 0, iterations])
-		plt.grid(True)
+		#plt.plot(sumAverage, label=str(fraction))
+		#n, bins, patches = plt.hist(sumAverage, 40, density=True, label=str(fraction), stacked=True)
+		print("{:g} 	 {:f}".format(fraction, sum(sumAverage) / float(len(sumAverage))))
+		sns.distplot(sumAverage, hist = False, kde = True,
+                 kde_kws = {'linewidth': 3},
+                 label = fraction)
 
-		plt.show()
-		#print("Mean error of dataset using fraction = {:f} and {:d} iterations: {:f}".format(fraction, iterations, sumAverage))
+	#print("Mean error of dataset using fraction = {:f} and {:d} iterations: {:f}".format(fraction, iterations, sumAverage))
+	plt.xlabel("Error ratio")
+	plt.ylabel("Density")
+	plt.title("Measure of spread for MONK-1 dataset according to error ratios over " + str(iterations) + " iterations")
+	plt.axis([0,0.5, 0,12])
+	plt.grid(True)
+	plt.legend(loc='upper right')
 
-ASSIGNMENT7(m.monk1, 100)
+	plt.show()
+
+ASSIGNMENT7(m.monk1, 1000)
 
 """
 	print("MONK-1")

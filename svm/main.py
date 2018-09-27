@@ -4,8 +4,10 @@ import matplotlib.pyplot as plt
 
 # Number of training samples
 N = 100
+# Initial guess of the alpha vector
 start = numpy.zeros(N)
 C = None
+# Lower and upper bounds for each value in alpha vector
 B = [(0, C) for b in range(N)]
 
 def zerofun(vec):
@@ -14,13 +16,18 @@ def zerofun(vec):
 
 XC = constraint = {'type':'eq', 'fun':zerofun(B)}
 
-print(XC)
+# List comprehension: will construct a new list a of the same length as the sequence seq.
+alpha = [expr for x in seq]
 
 def main():
-    ret = minimize(objective, start,
-    bounds = B, constraints = XC)
+    ret = minimize(objective(alpha), start, bounds = B, constraints = XC)
     alpha = ret['x']
 
-def objective(vec):
+# Find the alpha vector a that minimizes the function objective within the bounds and the constraints.
+def minimize(a, s, bounds, constraints):
+    return a
+
+# Take the alpha vector and return a scalar value by implementing the expression that should be minimized.
+def objective(a):
     scalar = 0
     return scalar

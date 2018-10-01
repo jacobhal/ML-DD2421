@@ -20,7 +20,6 @@ nonZeroAlpha = []
 target_values = []
 support_vectors = []
 bValue = 0
-tmp = []
 
 # Pre-compute the matrix P by multiplying the every combination of target values, t, and kernel K.
 preComputedMatrix = numpy.empty([N,N])
@@ -50,16 +49,25 @@ def objective(alpha_vector):
     vecmul = numpy.dot(alpha_vector, matmul)
     return 0.5 * vecmul - alpha_sum
 
-def indicator(support_vector):
-    val = numpy.dot(nonZeroAlpha, target_values) * numpy.sum(tmp) - bValue
-    return int(val)
+def indicator(point):
+    kernelMat = [kernel_function(point, x) for x in support_vectors]
+    val = numpy.sum(numpy.dot(numpy.dot(nonZeroAlpha, target_values), kernelMat)) - bValue
+    return val
 
-def plot(support_vectors, target_values):
+def plot(support_vectors):
     # Plot input data
     plt.plot([p[0] for p in data.classA], [p[1] for p in data.classA], 'b. ')
     plt.plot([p[0] for p in data.classB], [p[1] for p in data.classB], 'r. ')
     plt.axis('equal') # Force same scale on both axes
     plt.savefig('svmplot.pdf') # Save a copy in a file
+
+    # Plot decision boundary
+    xgrid = numpy.linspace(-5, 5)
+    ygrid = numpy.linspace(-4, 4)
+
+    grid = numpy.array([[indicator([x,y]) for x in xgrid] for y in ygrid])
+    print(grid)
+    plt.contour(xgrid, ygrid, grid, (-1.0, 0.0, 1.0), colors=('red', 'black', 'blue'), linewidths=(1,3,1))
 
     # Plot support vector points in green
     for i, point in enumerate(support_vectors):
@@ -68,18 +76,9 @@ def plot(support_vectors, target_values):
 
     plt.show() # Show the plot on the screen
 
-def plotDecisionBoundary():
-    # Plot decision boundary
-    xgrid = numpy.linspace(-5, 5)
-    ygrid = numpy.linspace(-4, 4)
-
-    grid = numpy.array([[indicator([x,y]) for x in xgrid] for y in ygrid])
-    plt.contour(xgrid, ygrid, grid, (-1.0, 0.0, 1.0), colors=('red', 'black', 'blue'), linewidths=(1,3,1))
-    plt.show()
-
 def main():
     printInputData()
-    global support_vectors, bValue, tmp
+    global nonZeroAlpha, support_vectors, target_values, bValue
     ret = minimize(objective, start, bounds = B, constraints = XC)
     success = ret['success']
     alpha = ret['x']
@@ -95,7 +94,7 @@ def main():
 
         # Calculate b value
         tmp = [kernel_function(support_vectors[0], x) for x in support_vectors]
-        bValue = numpy.dot(nonZeroAlpha, target_values) * numpy.sum(tmp) - target_values[0]
+        bValue = numpy.sum(numpy.dot(numpy.dot(nonZeroAlpha, target_values), tmp)) - target_values[0]
 
         print("\nSupport vectors")
         # Indicator function
@@ -103,7 +102,7 @@ def main():
             ind = indicator(point)
             print(f"({point[0]}, {point[1]}) classified as {ind}")
 
-        plot(support_vectors, target_values)
+        plot(support_vectors)
         #plotDecisionBoundary()
     else:
         print("No solution found")

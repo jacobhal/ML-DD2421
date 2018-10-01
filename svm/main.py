@@ -6,7 +6,7 @@ import test_data, kernel_functions as kf
 # What kernel function to use
 kernel_function = kf.functions['linear']
 # Number of training samples
-N = 20
+N = 200
 # Generate our test data
 data = test_data.TestData(N, False)
 data.generate_data()
@@ -51,16 +51,20 @@ def objective(alpha_vector):
 
 def indicator(point):
     kernelMat = [kernel_function(point, x) for x in support_vectors]
-    val = numpy.sum(numpy.dot(numpy.dot(nonZeroAlpha, target_values), kernelMat)) - bValue
-    return val
+    #val = numpy.sum(numpy.dot(kernelMat, numpy.dot(target_values, nonZeroAlpha))) - bValue
+    val = 0
+    for i,p in enumerate(kernelMat):
+        val += nonZeroAlpha[i] * target_values[i] * kernelMat[i]
+    #print(f"{point} has indicator value {val}")
+    return val - bValue
 
-def plot(support_vectors):
+def plot():
     # Plot input data
     plt.plot([p[0] for p in data.classA], [p[1] for p in data.classA], 'b. ')
     plt.plot([p[0] for p in data.classB], [p[1] for p in data.classB], 'r. ')
     plt.axis('equal') # Force same scale on both axes
     plt.savefig('svmplot.pdf') # Save a copy in a file
-
+    
     # Plot decision boundary
     xgrid = numpy.linspace(-5, 5)
     ygrid = numpy.linspace(-4, 4)
@@ -94,15 +98,21 @@ def main():
 
         # Calculate b value
         tmp = [kernel_function(support_vectors[0], x) for x in support_vectors]
-        bValue = numpy.sum(numpy.dot(numpy.dot(nonZeroAlpha, target_values), tmp)) - target_values[0]
+        #bValue = numpy.sum(numpy.dot(numpy.dot(nonZeroAlpha, target_values), tmp)) - target_values[0]
+        for i,p in enumerate(tmp):
+            bValue += nonZeroAlpha[i] * target_values[i] * tmp[i]
+        bValue -= target_values[0]    
+        print(bValue)
 
         print("\nSupport vectors")
         # Indicator function
         for i, point in enumerate(support_vectors):
             ind = indicator(point)
             print(f"({point[0]}, {point[1]}) classified as {ind}")
+            print(f"alpha = {nonZeroAlpha[i]}")
+            print(f"target = {target_values[i]}")
 
-        plot(support_vectors)
+        plot()
         #plotDecisionBoundary()
     else:
         print("No solution found")

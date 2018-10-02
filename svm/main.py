@@ -1,18 +1,32 @@
-import numpy, random, math
+import numpy, random, math, sys
 from scipy.optimize import minimize
 import matplotlib.pyplot as plt
 import test_data, kernel_functions as kf
 
+kfun = 'linear'
+opt = 2
+slack = None
+plotId = 0
+print(sys.argv)
+for i, arg in enumerate(sys.argv):
+    if sys.argv[i] == '-kf':
+        kfun = sys.argv[i+1]
+        opt = int(sys.argv[i+2])
+    if sys.argv[i] == '-slack':
+        slack = float(sys.argv[i+1])
+    if sys.argv[i] == '-pid':
+        plotId = int(sys.argv[i+1])
+    
 # What kernel function to use
-kernel_function = kf.functions['linear']
+kernel_function = lambda x,y : kf.functions[kfun](x, y, opt)
 # Number of training samples
 N = 200
 # Generate our test data
-data = test_data.TestData(N, False)
+data = test_data.TestData(N, True)
 data.generate_data()
 # Initial guess of the alpha vector
 start = numpy.zeros(N, dtype='float64')
-upper_bound = None
+upper_bound = slack
 # Lower and upper bounds for each value in alpha vector
 B = [(0, upper_bound) for b in range(N)]
 # Global variable for alpha, targets and support vectors
@@ -59,18 +73,18 @@ def indicator(point):
     return val - bValue
 
 def plot():
+    plt.clf()
     # Plot input data
     plt.plot([p[0] for p in data.classA], [p[1] for p in data.classA], 'b. ')
     plt.plot([p[0] for p in data.classB], [p[1] for p in data.classB], 'r. ')
     plt.axis('equal') # Force same scale on both axes
-    plt.savefig('svmplot.pdf') # Save a copy in a file
     
     # Plot decision boundary
     xgrid = numpy.linspace(-5, 5)
     ygrid = numpy.linspace(-4, 4)
 
     grid = numpy.array([[indicator([x,y]) for x in xgrid] for y in ygrid])
-    print(grid)
+    #print(grid)
     plt.contour(xgrid, ygrid, grid, (-1.0, 0.0, 1.0), colors=('red', 'black', 'blue'), linewidths=(1,3,1))
 
     # Plot support vector points in green
@@ -78,16 +92,18 @@ def plot():
         ind = indicator(point)
         plt.plot(point[0], point[1], 'k.')
 
-    plt.show() # Show the plot on the screen
+    path = 'C:/Users/Adrian/Pictures/ML-DD2421/svm/slack C 1/svmplot{:d}.png'.format(plotId)
+    plt.savefig(path) # Save a copy in a file
+    #plt.show() # Show the plot on the screen
 
 def main():
-    printInputData()
+    #printInputData()
     global nonZeroAlpha, support_vectors, target_values, bValue
     ret = minimize(objective, start, bounds = B, constraints = XC)
     success = ret['success']
     alpha = ret['x']
     if success:
-        print("Alpha vector\n", alpha)
+        #print("Alpha vector\n", alpha)
         # Find all alpha values above a certain threshhold and get the
         # corresponding inputs and target values
         nonZeroAlpha = alpha[alpha > 10 ** -5]
@@ -102,16 +118,17 @@ def main():
         for i,p in enumerate(tmp):
             bValue += nonZeroAlpha[i] * target_values[i] * tmp[i]
         bValue -= target_values[0]    
-        print(bValue)
+        #print(bValue)
 
-        print("\nSupport vectors")
+        #print("\nSupport vectors")
         # Indicator function
+        """
         for i, point in enumerate(support_vectors):
             ind = indicator(point)
             print(f"({point[0]}, {point[1]}) classified as {ind}")
             print(f"alpha = {nonZeroAlpha[i]}")
             print(f"target = {target_values[i]}")
-
+        """
         plot()
         #plotDecisionBoundary()
     else:

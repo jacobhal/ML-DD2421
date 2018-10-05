@@ -1,33 +1,36 @@
-import matrix as m
+import matrixfuns as m
 
-matrix = m.Matrix(7, 4, 5)
+# Dimensions of Matrices
+rows = 7
+cols = 4
+depth = 5
 
-matrix.gen2dMatrix(0)
-matrix.printMatrix()
+matrixzeros = m.gen2dMatrix(0, rows, cols)
+m.printMatrix(matrixzeros)
 
-matrix.gen2dMatrix(1)
-matrix.printMatrix()
+matrixones = m.gen2dMatrix(1, rows, cols)
+m.printMatrix(matrixones)
 
-matrix.gen3dMatrix(0)
-matrix.printMatrix()
+matrix3dzeros = m.gen3dMatrix(0, rows, cols, depth)
+m.printMatrix(matrix3dzeros)
 
-matrix.gen3dMatrix(1)
-matrix.printMatrix()
+matrix3dones = m.gen3dMatrix(1, rows, cols, depth)
+m.printMatrix(matrix3dones)
 
-matrix.gen2d3x3Matrix((1,2,3), (4,5,6), (7,8,9))
-matrix.printMatrix()
+matrix2d3x3 = m.gen2d3x3Matrix((1,2,3), (4,5,6), (7,8,9))
+m.printMatrix(matrix2d3x3)
 
-diagonal = matrix.getDiagonal()
+diagonal = m.getDiagonal(matrix2d3x3)
 print(diagonal)
 
-matrix.setDiagonalMatrix(diagonal)
-matrix.printMatrix()
+matrixRevert = m.getDiagonal(diagonal)
+m.printMatrix(matrixRevert)
 
-matrix.gen2d3x3Matrix((1,2,3), (4,5,6), (7,8,9))
-print(1.0/matrix.getMatrix())
+# This works
+print(1.0/matrix2d3x3)
 
-matrix.broadcast((1,1,1), 'subtract')
-matrix.printMatrix()
+matrixSubtracted = m.broadcast(matrix2d3x3, (1,1,1), 'subtract')
+m.printMatrix(matrixSubtracted)
 
-matrix.broadcast((1,1,1), 'add')
-matrix.printMatrix()
+matrixAdded = m.broadcast(matrix2d3x3, (1,1,1), 'add')
+m.printMatrix(matrixAdded)

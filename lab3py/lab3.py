@@ -45,7 +45,7 @@ def computePrior(labels, W=None):
 
     # TODO: compute the values of prior for each class!
     # ==========================
-
+    prior = [len(np.where(c==labels)[0])/Npts for c in classes]
     # ==========================
 
     return prior
@@ -136,7 +136,8 @@ class BayesClassifier(object):
 
 X, labels = genBlobs(centers=5)
 mu, sigma = mlParams(X,labels)
-plotGaussian(X,labels,mu,sigma)
+computePrior(labels)
+#plotGaussian(X,labels,mu,sigma)
 
 
 # Call the `testClassifier` and `plotBoundary` functions for this part.

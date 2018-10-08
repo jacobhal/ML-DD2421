@@ -104,9 +104,11 @@ def classifyBayes(X, prior, mu, sigma):
 
     for c in range(Nclasses):
         t1 = -0.5 * np.log(len(sigma[c]))
+        p = np.log(prior[c])
+        sigmaInv = np.linalg.inv(sigma[c])
         for i in range(Npts):
-            t2 = 0.5 * (X[i] - mu[c]) @ np.linalg.inv(sigma[c]) @ (X[i] - mu[c]).T
-            logProb[c, i] = t1 - t2 + prior[c]
+            t2 = 0.5 * (X[i] - mu[c]) @ sigmaInv @ (X[i] - mu[c]).T
+            logProb[c, i] = t1 - t2 + p
 
     # ==========================
 
@@ -139,26 +141,27 @@ class BayesClassifier(object):
 #
 # Call `genBlobs` and `plotGaussian` to verify your estimates.
 
-
+"""
 X, labels = genBlobs(centers=5)
 mu, sigma = mlParams(X,labels)
 prior = computePrior(labels)
 classifyBayes(X, prior, mu, sigma)
 #plotGaussian(X,labels,mu,sigma)
+"""
 
 
 # Call the `testClassifier` and `plotBoundary` functions for this part.
 
 
-#testClassifier(BayesClassifier(), dataset='iris', split=0.7)
+testClassifier(BayesClassifier(), dataset='iris', split=0.7)
 
 
 
-#testClassifier(BayesClassifier(), dataset='vowel', split=0.7)
+testClassifier(BayesClassifier(), dataset='vowel', split=0.7)
 
 
 
-#plotBoundary(BayesClassifier(), dataset='iris',split=0.7)
+plotBoundary(BayesClassifier(), dataset='iris',split=0.7)
 
 
 # ## Boosting functions to implement

@@ -69,12 +69,21 @@ def mlParams(X, labels, W=None):
 
     # TODO: fill in the code to compute mu and sigma!
     # ==========================
+    # calculate mu
+    mu2 = mu
+    res2 = m.nli(X,labels)
+    mu2 = [[x[:,0].mean(), x[:,1].mean()] for x in res2] # with list comprehension
 
     for jdx, c in enumerate(classes):
         res = m.nliClass(X, labels, c)
         mu[c, 0] = res[:, 0].mean()
         mu[c, 1] = res[:, 1].mean()
 
+    # calculate sigma
+    for jdx, c in enumerate(classes):
+        mat = (res2[jdx] - mu2[jdx]).T @ (res2[jdx] - mu2[jdx]) # do matrix multiplication between our data point - mu matrix for each class
+        mat /= len(res2[jdx]) # divide every value with the number of data points for that class
+        sigma[c] = np.diag(np.diag(mat)) # take the diagonal and set it in our sigma matrix
     # ==========================
 
     return mu, sigma

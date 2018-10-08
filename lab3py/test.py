@@ -1,4 +1,5 @@
 import matrixfuns as m
+#import lab3 as l
 
 # Dimensions of Matrices
 rows = 7
@@ -34,3 +35,7 @@ m.printMatrix(matrixSubtracted)
 
 matrixAdded = m.broadcast(matrix2d3x3, (1,1,1), 'add')
 m.printMatrix(matrixAdded)
+
+#X, labels = l.genBlobs(centers=5)
+#print(m.nli(X, labels))
+#print(m.nliClass(X, labels, 0))

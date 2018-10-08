@@ -64,13 +64,16 @@ def mlParams(X, labels, W=None):
     if W is None:
         W = np.ones((Npts,1))/float(Npts)
 
-    m.nli(X, labels)
-
     mu = np.zeros((Nclasses,Ndims))
     sigma = np.zeros((Nclasses,Ndims,Ndims))
 
     # TODO: fill in the code to compute mu and sigma!
     # ==========================
+
+    for jdx, c in enumerate(classes):
+        res = m.nliClass(X, labels, c)
+        mu[c, 0] = res[:, 0].mean()
+        mu[c, 1] = res[:, 1].mean()
 
     # ==========================
 

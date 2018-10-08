@@ -21,6 +21,7 @@ from scipy import misc
 from imp import reload
 from labfuns import *
 import random
+import matrixfuns as m
 
 
 # ## Bayes classifier functions to implement
@@ -63,13 +64,7 @@ def mlParams(X, labels, W=None):
     if W is None:
         W = np.ones((Npts,1))/float(Npts)
 
-    # Iterate over both index and value
-    for jdx,c in enumerate(classes):
-        idx = labels==c # Returns a true or false with the length of y
-        # Or more compactly extract the indices for which y==class is true,
-        # analogous to MATLAB’s find
-        idx = np.where(labels==c)[0]
-        xlc = X[idx,:] # Get the x for the class labels. Vectors are rows.
+    m.nli(X, labels)
 
     mu = np.zeros((Nclasses,Ndims))
     sigma = np.zeros((Nclasses,Ndims,Ndims))

@@ -102,6 +102,12 @@ def classifyBayes(X, prior, mu, sigma):
     # TODO: fill in the code to compute the log posterior logProb!
     # ==========================
 
+    for c in range(Nclasses):
+        t1 = -0.5 * np.log(len(sigma[c]))
+        for i in range(Npts):
+            t2 = 0.5 * (X[i] - mu[c]) @ np.linalg.inv(sigma[c]) @ (X[i] - mu[c]).T
+            logProb[c, i] = t1 - t2 + prior[c]
+
     # ==========================
 
     # one possible way of finding max a-posteriori once
@@ -136,7 +142,8 @@ class BayesClassifier(object):
 
 X, labels = genBlobs(centers=5)
 mu, sigma = mlParams(X,labels)
-computePrior(labels)
+prior = computePrior(labels)
+classifyBayes(X, prior, mu, sigma)
 #plotGaussian(X,labels,mu,sigma)
 
 

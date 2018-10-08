@@ -41,17 +41,7 @@ def broadcast(mat, rowVector, operation):
 
 def nli(X, y):
     classes = np.unique(y) # Get the unique examples
-    res = gen2dMatrix(0, 0, np.shape(X)[1])
-    print(np.shape(X), np.shape(y))
     res = [X[np.where(y==c)] for c in classes]
-    return res
-    # Iterate over both index and value
-    for jdx,c in enumerate(classes):
-        # Extract the indices for which y==class is true,
-        # analogous to MATLAB’s find
-        idx = np.where(y==c)[0]
-        xlc = X[idx,:] # Get the x for the class labels. Vectors are rows.
-        res = np.vstack((res, xlc))
     return res
 
 def nliClass(X, y, c):

@@ -134,7 +134,7 @@ class BayesClassifier(object):
 # ## Test the Maximum Likelihood estimates
 #
 # Call `genBlobs` and `plotGaussian` to verify your estimates.
-
+"""
 X, labels = genBlobs(centers=5)
 W = np.full((np.shape(X)[0],1), 1/float(np.shape(X)[0]))
 
@@ -142,7 +142,7 @@ mu, sigma = mlParams(X,labels, W)
 prior = computePrior(labels)
 #classifyBayes(X, prior, mu, sigma)
 #plotGaussian(X,labels,mu,sigma)
-
+"""
 
 
 # Call the `testClassifier` and `plotBoundary` functions for this part.
@@ -189,8 +189,16 @@ def trainBoost(base_classifier, X, labels, T=10):
 
         # TODO: Fill in the rest, construct the alphas etc.
         # ==========================
+        error = np.sum([wCur[i] for i,v in enumerate(vote) if v != labels[i]])
 
-        # alphas.append(alpha) # you will need to append the new alpha
+        alpha = 0.5 * (np.log(1 - error) - np.log(error)) 
+        alphas.append(alpha) # you will need to append the new alpha
+        
+        wCur = [w * np.exp(-alpha if vote[i] == labels[i] else alpha) \
+                for i,w in enumerate(wCur)]
+        # normalize the weights (so that they sum to 1)
+        wCur = [1.0/np.sum(wCur) * w for w in wCur]
+        wCur = np.array(wCur)
         # ==========================
 
     return classifiers, alphas
@@ -246,7 +254,7 @@ class BoostClassifier(object):
 # Call the `testClassifier` and `plotBoundary` functions for this part.
 
 
-#testClassifier(BoostClassifier(BayesClassifier(), T=10), dataset='iris',split=0.7)
+testClassifier(BoostClassifier(BayesClassifier(), T=10), dataset='iris',split=0.7)
 
 
 

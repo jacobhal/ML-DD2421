@@ -39,12 +39,13 @@ def broadcast(mat, rowVector, operation):
     elif(operation == 'subtract'):
         return mat - rowVector
 
-def nli(X, y):
+def nli(X, y, W):
     classes = np.unique(y) # Get the unique examples
-    res = [X[np.where(y==c)] for c in classes]
-    return res
+    res = [X[np.where(y==c)[0]] for c in classes]
+    wtmp = [W[np.where(y==c)[0]] for c in classes]
+    return res, wtmp
 
-def nliClass(X, y, c):
+def nliClass(X, y, W, c):
     classes = np.unique(y) # Get the unique examples
     # Iterate over both index and value
     if (c in classes):
@@ -52,5 +53,6 @@ def nliClass(X, y, c):
         # analogous to MATLAB’s find
         idx = np.where(y==c)[0]
         xlc = X[idx,:] # Get the x for the class labels. Vectors are rows.
-        return xlc
+        wtmp = W[idx, 0]
+        return xlc, wtmp
     return None

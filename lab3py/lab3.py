@@ -45,9 +45,8 @@ def computePrior(labels, W=None):
 
     # TODO: compute the values of prior for each class!
     # ==========================
-    prior = [len(np.where(c==labels)[0])/Npts for c in classes]
+    prior = [np.sum(W[np.where(c==labels)[0]])/np.sum(W) for c in classes]
     # ==========================
-
     return prior
 
 # NOTE: you do not need to handle the W argument for this part!
@@ -138,8 +137,9 @@ class BayesClassifier(object):
 
 X, labels = genBlobs(centers=5)
 W = np.full((np.shape(X)[0],1), 1/float(np.shape(X)[0]))
+
 mu, sigma = mlParams(X,labels, W)
-#prior = computePrior(labels)
+prior = computePrior(labels)
 #classifyBayes(X, prior, mu, sigma)
 #plotGaussian(X,labels,mu,sigma)
 
